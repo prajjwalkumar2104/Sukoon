@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Howl } from 'howler';
 
-export function useSound(src: string, isActive: boolean, volume: number) {
+export function useSound(src: string, isActive: boolean, volume: number, isGlobalPlay: boolean) {
   const soundRef = useRef<Howl | null>(null);
 
   useEffect(() => {
@@ -15,12 +15,15 @@ export function useSound(src: string, isActive: boolean, volume: number) {
     }
 
     const sound = soundRef.current;
+    
+    // The sound should only play if it's individually active AND the global player is playing
+    const shouldPlay = isActive && isGlobalPlay;
 
-    if (isActive && sound && !sound.playing()) {
+    if (shouldPlay && sound && !sound.playing()) {
       sound.play();
-      sound.fade(0, volume / 100, 1000);
-    } else if (!isActive && sound && sound.playing()) {
-      sound.fade(sound.volume(), 0, 1000);
+      sound.fade(0, volume / 100, 1000); // 1-second fade in
+    } else if (!shouldPlay && sound && sound.playing()) {
+      sound.fade(sound.volume(), 0, 1000); // 1-second fade out
       sound.once('fade', () => {
         sound.pause();
       });
@@ -31,7 +34,7 @@ export function useSound(src: string, isActive: boolean, volume: number) {
         sound.unload();
       }
     };
-  }, [src, isActive, volume]); // Added dependencies to satisfy ESLint
+  }, [src, isActive, isGlobalPlay]); // Dependency added for global play
 
   useEffect(() => {
     if (soundRef.current) {
