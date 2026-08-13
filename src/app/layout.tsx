@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Sukoon",
   description: "Find your peace with ambient soundscapes.",
-  manifest: "/manifest.json", // <-- Add this line
+  manifest: "/manifest.json", 
   themeColor: "#111827",
 };
 
