@@ -8,6 +8,8 @@ import {
   Ship, Car, Siren, Users, Train, HardHat, 
   Anchor, Radar, Fan, Tv, Coffee, LucideIcon, X
 } from 'lucide-react';
+
+
 import { useSound } from '../hooks/useSound'; // Ensure this is imported!
 
 // --- TypeScript Interfaces ---
@@ -124,6 +126,8 @@ const CATEGORIES: CategoryConfig[] = [
     ]
   }
 ];
+
+
 
 const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onVolumeChange, themeHex, isGlobalPlay }) => {
   const Icon = sound.icon;
