@@ -65,34 +65,52 @@ body {
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='60'%3E%3Crect width='0.5' height='10' fill='%23ffffff' fill-opacity='0.2'/%3E%3C/svg%3E");
   animation: rain-fall 0.7s linear infinite;
 }
-
 /* =========================================
-   CINEMATIC VISUAL UPGRADES
+   CINEMATIC VISUAL UPGRADES V2
    ========================================= */
 
-/* Rising Fire Sparks */
+/* UPGRADED SPARKS: 3 distinct layers with chaotic wind swaying */
 @keyframes sparks-rise {
-  0% { background-position: 0px 100%, 0px 100%; opacity: 0; }
+  0% { 
+    background-position: 0px 100%, 0px 100%, 0px 100%; 
+    opacity: 0; 
+  }
   10% { opacity: 1; }
-  100% { background-position: 50px -100px, -50px -200px; opacity: 0; }
+  40% { 
+    background-position: 40px 60%, -50px 50%, 20px 70%; 
+    opacity: 0.9; 
+  }
+  70% { 
+    background-position: -30px 30%, 30px 20%, -10px 40%; 
+    opacity: 0.6; 
+  }
+  100% { 
+    background-position: 50px -10%, -20px -20%, 40px 0%; 
+    opacity: 0; 
+  }
 }
 .animate-sparks {
-  /* Creates tiny glowing orange and yellow dots */
   background-image: 
-    radial-gradient(circle, #ffb400 1.5px, transparent 2px),
-    radial-gradient(circle, #ff5a00 1px, transparent 2px);
-  background-size: 150px 150px, 200px 200px; /* Spaces the sparks out randomly */
-  animation: sparks-rise 3s linear infinite;
+    radial-gradient(circle, #ffb400 1.5px, transparent 2px), 
+    radial-gradient(circle, #ff5a00 2.5px, transparent 3px), 
+    radial-gradient(circle, #ffcc00 1px, transparent 1.5px);  
+  background-size: 150px 150px, 250px 250px, 90px 90px; 
+  animation: sparks-rise 4s ease-in-out infinite;
+  
+  /* NEW: Restricts the sparks to a smooth circle at the bottom center of the screen */
+  -webkit-mask-image: radial-gradient(ellipse 35% 60% at 50% 100%, black 10%, transparent 100%);
+  mask-image: radial-gradient(ellipse 35% 60% at 50% 100%, black 10%, transparent 100%);
 }
 
-/* Drifting Rain Mist */
-@keyframes mist-drift {
-  0% { transform: translateX(-5%) scale(1.1); opacity: 0.2; }
-  50% { opacity: 0.5; }
-  100% { transform: translateX(5%) scale(1.1); opacity: 0.2; }
+@keyframes rain-fall {
+  0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
+  100% { background-position: 100px 1000px, 50px 1500px, -50px 800px; } 
 }
-.animate-mist {
-  /* Creates a soft white fog that fades out towards the top */
-  background: linear-gradient(to top, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
-  animation: mist-drift 8s ease-in-out infinite alternate;
+.animate-rain {
+  /* Increased the SVG width and height dramatically to space the drops further apart, and lowered opacity */
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='200'%3E%3Cpath d='M1.5,0 L3,20 A1.5,1.5 0 0,1 0,20 Z' fill='%23ffffff' fill-opacity='0.4'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='300'%3E%3Cpath d='M1,0 L2,15 A1,1 0 0,1 0,15 Z' fill='%23ffffff' fill-opacity='0.25'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='120'%3E%3Cpath d='M0.5,0 L1,8 A0.5,0.5 0 0,1 0,8 Z' fill='%23ffffff' fill-opacity='0.15'/%3E%3C/svg%3E");
+  animation: rain-fall 0.9s linear infinite;
 }
