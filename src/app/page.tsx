@@ -130,18 +130,18 @@ const CATEGORIES: CategoryConfig[] = [
     themeHex: '#1e293b',
     navIcon: Building,
     sounds: [
-      { id: 'urban_airport', name: 'Airport', icon: Building, file: '/sounds/Urban and Ciry/airport_noise.ogg' },
-      { id: 'urban_rain', name: 'City Rain', icon: CloudRain, file: '/sounds/Urban and Ciry/city_rain.ogg' },
-      { id: 'urban_rain_hit', name: 'Rain Hitting', icon: Droplet, file: '/sounds/Urban and Ciry/city_rain_hitting_a_.ogg' },
-      { id: 'urban_wind', name: 'City Wind', icon: Wind, file: '/sounds/Urban and Ciry/city_wind.ogg' },
-      { id: 'urban_construction', name: 'Construction', icon: HardHat, file: '/sounds/Urban and Ciry/construction_work.ogg' },
-      { id: 'urban_crowd', name: 'Crowd', icon: Users, file: '/sounds/Urban and Ciry/crowd_noise.ogg' },
-      { id: 'urban_train_in', name: 'Inside Train', icon: Train, file: '/sounds/Urban and Ciry/inside_a_train.ogg' },
-      { id: 'urban_pigeons', name: 'Pigeons', icon: Bird, file: '/sounds/Urban and Ciry/pigeons.ogg' },
-      { id: 'urban_police', name: 'Police Siren', icon: Siren, file: '/sounds/Urban and Ciry/police_siren.ogg' },
-      { id: 'urban_traffic', name: 'Traffic', icon: Car, file: '/sounds/Urban and Ciry/traffic.ogg' },
-      { id: 'urban_train_pass', name: 'Train Passing', icon: Train, file: '/sounds/Urban and Ciry/train_passing.ogg' },
-      { id: 'urban_truck', name: 'Truck Engine', icon: Car, file: '/sounds/Urban and Ciry/truck_engine.ogg' },
+      { id: 'urban_airport', name: 'Airport', icon: Building, file: '/sounds/Urban/airport_noise.ogg' },
+      { id: 'urban_rain', name: 'City Rain', icon: CloudRain, file: '/sounds/Urban/city_rain.ogg' },
+      { id: 'urban_rain_hit', name: 'Rain Hitting', icon: Droplet, file: '/sounds/Urban/city_rain_hitting_a_.ogg' },
+      { id: 'urban_wind', name: 'City Wind', icon: Wind, file: '/sounds/Urban/city_wind.ogg' },
+      { id: 'urban_construction', name: 'Construction', icon: HardHat, file: '/sounds/Urban/construction_work.ogg' },
+      { id: 'urban_crowd', name: 'Crowd', icon: Users, file: '/sounds/Urban/crowd_noise.ogg' },
+      { id: 'urban_train_in', name: 'Inside Train', icon: Train, file: '/sounds/Urban/inside_a_train.ogg' },
+      { id: 'urban_pigeons', name: 'Pigeons', icon: Bird, file: '/sounds/Urban/pigeons.ogg' },
+      { id: 'urban_police', name: 'Police Siren', icon: Siren, file: '/sounds/Urban/police_siren.ogg' },
+      { id: 'urban_traffic', name: 'Traffic', icon: Car, file: '/sounds/Urban/traffic.ogg' },
+      { id: 'urban_train_pass', name: 'Train Passing', icon: Train, file: '/sounds/Urban/train_passing.ogg' },
+      { id: 'urban_truck', name: 'Truck Engine', icon: Car, file: '/sounds/Urban/truck_engine.ogg' },
     ]
   },
   {
@@ -152,18 +152,18 @@ const CATEGORIES: CategoryConfig[] = [
     themeHex: '#65a30d',
     navIcon: Map,
     sounds: [
-      { id: 'country_cow', name: 'Cow', icon: PawPrint, file: '/sounds/Canp Field Countryside/cow.ogg' },
-      { id: 'country_dog', name: 'Dog', icon: PawPrint, file: '/sounds/Canp Field Countryside/dog.ogg' },
-      { id: 'country_birds', name: 'Field Birds', icon: Bird, file: '/sounds/Canp Field Countryside/field_birds.ogg' },
-      { id: 'country_hens', name: 'Hens', icon: Bird, file: '/sounds/Canp Field Countryside/hens.ogg' },
-      { id: 'country_horse', name: 'Horse', icon: PawPrint, file: '/sounds/Canp Field Countryside/horse.ogg' },
-      { id: 'country_pigs', name: 'Pigs', icon: PawPrint, file: '/sounds/Canp Field Countryside/pigs.ogg' },
-      { id: 'country_rain', name: 'Rain', icon: CloudRain, file: '/sounds/Canp Field Countryside/rain_in_the_field.ogg' },
-      { id: 'country_rooster', name: 'Rooster', icon: Bird, file: '/sounds/Canp Field Countryside/rooster.ogg' },
-      { id: 'country_sheep', name: 'Sheep', icon: PawPrint, file: '/sounds/Canp Field Countryside/sheep.ogg' },
-      { id: 'country_storm', name: 'Storm', icon: CloudRain, file: '/sounds/Canp Field Countryside/storm_in_the_field.ogg' },
-      { id: 'country_stream', name: 'Stream', icon: Waves, file: '/sounds/Canp Field Countryside/stream.ogg' },
-      { id: 'country_wind', name: 'Wind', icon: Wind, file: '/sounds/Canp Field Countryside/wind_in_the_field.ogg' },
+      { id: 'country_cow', name: 'Cow', icon: PawPrint, file: '/sounds/Countryside/cow.ogg' },
+      { id: 'country_dog', name: 'Dog', icon: PawPrint, file: '/sounds/Countryside/dog.ogg' },
+      { id: 'country_birds', name: 'Field Birds', icon: Bird, file: '/sounds/Countryside/field_birds.ogg' },
+      { id: 'country_hens', name: 'Hens', icon: Bird, file: '/sounds/Countryside/hens.ogg' },
+      { id: 'country_horse', name: 'Horse', icon: PawPrint, file: '/sounds/Countryside/horse.ogg' },
+      { id: 'country_pigs', name: 'Pigs', icon: PawPrint, file: '/sounds/Countryside/pigs.ogg' },
+      { id: 'country_rain', name: 'Rain', icon: CloudRain, file: '/sounds/Countryside/rain_in_the_field.ogg' },
+      { id: 'country_rooster', name: 'Rooster', icon: Bird, file: '/sounds/Countryside/rooster.ogg' },
+      { id: 'country_sheep', name: 'Sheep', icon: PawPrint, file: '/sounds/Countryside/sheep.ogg' },
+      { id: 'country_storm', name: 'Storm', icon: CloudRain, file: '/sounds/Countryside/storm_in_the_field.ogg' },
+      { id: 'country_stream', name: 'Stream', icon: Waves, file: '/sounds/Countryside/stream.ogg' },
+      { id: 'country_wind', name: 'Wind', icon: Wind, file: '/sounds/Countryside/wind_in_the_field.ogg' },
     ]
   },
   {
@@ -375,35 +375,48 @@ export default function Home() {
       )}
 
       {/* Bottom Navigation Containers */}
-      <div className="absolute z-20 bottom-0 left-0 w-full flex flex-col backdrop-blur-md">
+      {/* =========================================
+          PREMIUM BOTTOM NAVIGATION DOCK 
+          ========================================= */}
+      <div className={`absolute z-20 bottom-0 md:bottom-0 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-[95%] max-w-4xl flex flex-col ${activeCategory.themeColor} backdrop-blur-2xl md:rounded-3xl border-t md:border border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_10px_50px_rgba(0,0,0,0.7)] overflow-hidden transition-colors duration-500`}>
         
-        <div className="bg-black/60 py-4 px-8 flex justify-between items-center w-full border-b border-white/5 h-20">
+        {/* Playback Controls (Top Half of Dock) */}
+        <div className="py-4 px-6 md:px-8 flex justify-between items-center w-full border-b border-white/5 h-20 bg-white/5">
+          
           {/* Timer Button */}
-          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col items-center min-w-[80px] items-start text-white/80 hover:text-white transition-colors">
-            <Timer size={26} strokeWidth={1.5} className={timeLeft ? 'text-green-400' : ''}/>
-            {timeLeft !== null && <span className="text-xs mt-1 text-green-400 font-mono">{formatTime(timeLeft)}</span>}
+          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col items-center min-w-[80px] items-start text-white/50 hover:text-white transition-colors">
+            <Timer size={24} strokeWidth={1.5} className={timeLeft ? 'text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]' : ''}/>
+            {timeLeft !== null && <span className="text-[10px] mt-1 text-green-400 font-mono tracking-widest">{formatTime(timeLeft)}</span>}
           </button>
           
-          {/* Play/Pause Button */}
-          <button onClick={() => setIsGlobalPlay(!isGlobalPlay)} className="text-white hover:scale-110 transition-transform bg-white/10 p-4 rounded-full">
-            {isGlobalPlay ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" />}
+          {/* Master Play/Pause Button - Tactile Solid Design */}
+          <button 
+            onClick={() => setIsGlobalPlay(!isGlobalPlay)} 
+            className="text-black bg-white hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-300 p-4 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center"
+          >
+            {isGlobalPlay ? (
+              <Pause size={24} fill="currentColor" />
+            ) : (
+              // Added ml-1 to optically center the play triangle inside the circle perfectly
+              <Play size={24} fill="currentColor" className="ml-1" /> 
+            )}
           </button>
           
-          {/* FIX 2: Global Volume Slider Implementation */}
+          {/* Global Volume Slider */}
           <div className="flex items-center gap-3 min-w-[80px] justify-end group">
-            <Volume2 size={26} strokeWidth={1.5} className="text-white/80" />
+            <Volume2 size={24} strokeWidth={1.5} className="text-white/50 group-hover:text-white transition-colors" />
             <input 
               type="range" 
               min="0" max="100" 
               value={globalVolume}
               onChange={(e) => setGlobalVolume(Number(e.target.value))}
-              className="w-16 md:w-24 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white"
+              className="w-16 md:w-24 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white"
             />
           </div>
         </div>
 
-        {/* Dynamic Environment Navigation Bar */}
-        <div className="bg-black/80 py-4 px-6 flex items-center justify-between md:justify-evenly w-full overflow-x-auto gap-4 no-scrollbar">
+        {/* Categories Navbar (Bottom Half of Dock) */}
+        <div className="py-4 px-6 flex items-center justify-between md:justify-evenly w-full overflow-x-auto gap-6 no-scrollbar">
           {CATEGORIES.map((category) => {
             const NavIcon = category.navIcon;
             const isNavActive = activeCategoryId === category.id;
@@ -412,13 +425,16 @@ export default function Home() {
               <button 
                 key={category.id}
                 onClick={() => setActiveCategoryId(category.id)}
-                className={`flex flex-col items-center gap-1 transition-all duration-300 min-w-[60px] flex-shrink-0 ${
-                  isNavActive ? 'text-white scale-110' : 'text-white/50 hover:text-white/80'
+                className={`flex flex-col items-center gap-1.5 transition-all duration-300 min-w-[60px] flex-shrink-0 ${
+                  isNavActive ? 'text-white scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-white/40 hover:text-white/80'
                 }`}
               >
-                <NavIcon size={24} strokeWidth={1.5}/>
+                {/* Icon gets slightly thicker when active for visual weight */}
+                <NavIcon size={22} strokeWidth={isNavActive ? 2 : 1.5}/>
+                
+                {/* Premium Active Indicator: A subtle glowing dot instead of a line */}
                 {isNavActive && (
-                  <div className="w-4 h-[2px] bg-white rounded-full mt-1"></div>
+                  <div className="w-1 h-1 bg-white rounded-full mt-0.5 shadow-[0_0_6px_white]"></div>
                 )}
               </button>
             )
