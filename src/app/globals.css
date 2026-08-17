@@ -20,3 +20,79 @@ body {
 body {
   overflow: hidden; /* Prevents the body itself from scrolling */
 }
+
+/* =========================================
+   PREMIUM DYNAMIC VISUAL EFFECTS
+   ========================================= */
+
+/* Lightning Flash Effect (Unchanged) */
+@keyframes lightning {
+  0% { opacity: 0; }
+  10%, 15% { opacity: 0.8; }
+  12%, 18% { opacity: 0; }
+  100% { opacity: 0; }
+}
+.animate-lightning {
+  animation: lightning 7s infinite;
+}
+
+/* 1. UPGRADED FIRE: Fast, erratic, crackling intensity */
+@keyframes fire-flicker {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  10% { opacity: 0.8; transform: scale(1.02); }
+  20% { opacity: 0.4; transform: scale(0.98); }
+  30% { opacity: 0.9; transform: scale(1.04); }
+  50% { opacity: 0.3; transform: scale(0.99); }
+  70% { opacity: 1.0; transform: scale(1.05); }
+  80% { opacity: 0.5; transform: scale(0.97); }
+}
+.animate-fire {
+  /* Runs much faster (1.5s) to simulate a real crackling fire */
+  animation: fire-flicker 1.5s infinite alternate;
+}
+
+/* 2. UPGRADED RAIN: Parallax SVG Drops falling diagonally */
+@keyframes rain-fall {
+  0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
+  /* Shifts X slightly and Y massively to create a falling slant */
+  100% { background-position: 100px 1000px, 50px 1500px, -50px 800px; } 
+}
+.animate-rain {
+  /* Generates 3 distinct layers of rain drops using raw SVG code */
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='100'%3E%3Crect width='1.5' height='20' fill='%23ffffff' fill-opacity='0.5'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='25' height='150'%3E%3Crect width='1' height='15' fill='%23ffffff' fill-opacity='0.3'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='60'%3E%3Crect width='0.5' height='10' fill='%23ffffff' fill-opacity='0.2'/%3E%3C/svg%3E");
+  animation: rain-fall 0.7s linear infinite;
+}
+
+/* =========================================
+   CINEMATIC VISUAL UPGRADES
+   ========================================= */
+
+/* Rising Fire Sparks */
+@keyframes sparks-rise {
+  0% { background-position: 0px 100%, 0px 100%; opacity: 0; }
+  10% { opacity: 1; }
+  100% { background-position: 50px -100px, -50px -200px; opacity: 0; }
+}
+.animate-sparks {
+  /* Creates tiny glowing orange and yellow dots */
+  background-image: 
+    radial-gradient(circle, #ffb400 1.5px, transparent 2px),
+    radial-gradient(circle, #ff5a00 1px, transparent 2px);
+  background-size: 150px 150px, 200px 200px; /* Spaces the sparks out randomly */
+  animation: sparks-rise 3s linear infinite;
+}
+
+/* Drifting Rain Mist */
+@keyframes mist-drift {
+  0% { transform: translateX(-5%) scale(1.1); opacity: 0.2; }
+  50% { opacity: 0.5; }
+  100% { transform: translateX(5%) scale(1.1); opacity: 0.2; }
+}
+.animate-mist {
+  /* Creates a soft white fog that fades out towards the top */
+  background: linear-gradient(to top, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  animation: mist-drift 8s ease-in-out infinite alternate;
+}

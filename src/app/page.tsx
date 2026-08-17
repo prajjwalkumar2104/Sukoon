@@ -88,7 +88,7 @@ const CATEGORIES: CategoryConfig[] = [
       { id: 'home_washing', name: 'Washing Machine', icon: Activity, file: '/sounds/Home/washing_machine.ogg' },
       { id: 'home_drops', name: 'Water Drops', icon: Droplet, file: '/sounds/Home/water_drops.ogg' },
       { id: 'home_white', name: 'White Noise', icon: Tv, file: '/sounds/Home/white_noise.ogg' },
-      { id: 'home_windout', name: 'Wind Outside', icon: Wind, file: '/sounds/Home/wind_outside_the_h.ogg' },
+      { id: 'home_windout', name: 'Wind Outside', icon: Wind, file: '/sounds/Home/wind_outside_the_house.ogg' },
     ]
   },
   {
@@ -288,6 +288,27 @@ export default function Home() {
   // NEW: Zen Mode State
   const [isZenMode, setIsZenMode] = useState<boolean>(false);
 
+  // --- VISUAL EFFECTS LOGIC ---
+  // Check if any "Rain" related sound is active
+  const isRainActive = 
+    activeSounds['beach_storm']?.active || 
+    activeSounds['beach_rain']?.active || 
+    activeSounds['forest_rain']?.active || 
+    activeSounds['urban_rain']?.active ||
+    activeSounds['urban_rain_hit']?.active ||
+    activeSounds['country_rain']?.active;
+
+  // Check if any "Storm" related sound is active (for lightning)
+  const isStormActive = 
+    activeSounds['beach_storm']?.active || 
+    activeSounds['forest_storm']?.active ||
+    activeSounds['country_storm']?.active;
+
+  // Check if any "Fire" related sound is active (for warm glow)
+  const isFireActive = 
+    activeSounds['beach_bonfire']?.active || 
+    activeSounds['forest_bonfire']?.active || 
+    activeSounds['home_fire']?.active;
   // Sync Zen Mode state if the user presses 'Esc' to exit fullscreen natively
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -411,14 +432,43 @@ export default function Home() {
   return (
     <main className="relative h-screen w-full overflow-hidden bg-gray-900 text-white font-sans flex flex-col transition-colors duration-500">
       
-      {/* Background Image Layer with Breathing Effect */}
+      {/* =========================================
+          BACKGROUND & DYNAMIC VISUAL LAYERS
+          ========================================= */}
+      
+      {/* 1. Base Breathing Background Image */}
       <div 
         key={activeCategory.id} 
         className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-1000 ease-in-out scale-110 animate-[pulse_20s_ease-in-out_infinite]" 
         style={{ backgroundImage: `url("${activeCategory.bgImage}")` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"></div>
-      </div>
+      ></div>
+
+     {/* 2. UPGRADED: Dynamic Rain & Mist Layer */}
+      {isRainActive && (
+        <>
+          {/* Slanted Rain (Simulates Wind) */}
+          <div className="absolute inset-0 z-0 pointer-events-none mix-blend-screen animate-rain transition-opacity duration-1000 scale-125 rotate-12 origin-top"></div>
+          {/* Low-lying Fog/Mist */}
+          <div className="absolute bottom-0 left-0 w-full h-[50vh] z-0 pointer-events-none animate-mist transition-opacity duration-1000 mix-blend-screen"></div>
+        </>
+      )}
+
+      {/* 3. Dynamic Lightning Flashes */}
+      {isStormActive && (
+        <div className="absolute inset-0 z-0 pointer-events-none bg-white opacity-0 animate-lightning mix-blend-overlay"></div>
+      )}
+
+      {/* 4. UPGRADED: Dynamic Fire Glow & Rising Sparks */}
+      {isFireActive && (
+        <>
+          {/* Base Crackling Glow */}
+          <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_bottom,rgba(255,90,10,0.6)_0%,rgba(0,0,0,0)_70%)] animate-fire transition-opacity duration-1000 mix-blend-color-dodge"></div>
+          {/* Rising Embers/Sparks */}
+          <div className="absolute inset-0 z-0 pointer-events-none animate-sparks transition-opacity duration-1000 mix-blend-screen opacity-80"></div>
+        </>
+      )}
+      {/* 5. Standard Dark Vignette / Shadow Overlay */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70 pointer-events-none"></div>
 
       <div className={`relative z-10 flex-1 flex flex-col no-scrollbar px-6 overflow-y-auto pb-40 transition-all duration-1000 ${
   isZenMode ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 scale-100'
