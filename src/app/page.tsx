@@ -420,12 +420,15 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"></div>
       </div>
 
-      <div className={`relative z-10 flex-1 flex flex-col no-scrollbar pt-12 px-6 overflow-y-auto pb-40 transition-all duration-1000 ${
+      <div className={`relative z-10 flex-1 flex flex-col no-scrollbar px-6 overflow-y-auto pb-40 transition-all duration-1000 ${
   isZenMode ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 scale-100'
 }`}>
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-wide drop-shadow-lg transition-all duration-300">
+        {/* Sticky Header with transparent fade mask */}
+      <div className="sticky top-0 z-30 pt-12 pb-8 -mx-6 px-6 bg-gradient-to-b from-black/50 via-black/10 to-transparent pointer-events-none">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-wide drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] transition-all duration-300">
           {activeCategory.name}
         </h1>
+      </div>
         
         {/* FIX 3: Render ALL categories but hide the inactive ones. This prevents React from destroying the audio players! */}
         {CATEGORIES.map((category) => (
