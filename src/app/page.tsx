@@ -7,7 +7,7 @@ import {
   Trees, Building, Fish, Sofa, Flame, Guitar, 
   Ship, Car, Siren, Users, Train, HardHat, 
   Anchor, Radar, Fan, Tv, Coffee, LucideIcon, 
-  X, PawPrint, Bug, Bell, Disc, Activity, Clock, Keyboard, Map
+  X, PawPrint, Bug, Bell, Disc, Activity, Clock, Keyboard, Map, Brain
 } from 'lucide-react';
 import { useSound } from '../hooks/useSound';
 
@@ -16,16 +16,16 @@ interface SoundState { active: boolean; volume: number; }
 type ActiveSounds = Record<string, SoundState>;
 interface SoundConfig { id: string; name: string; icon: LucideIcon; file: string; }
 interface CategoryConfig { id: string; name: string; bgImage: string; themeColor: string; themeHex: string; navIcon: LucideIcon; sounds: SoundConfig[]; }
-interface SoundItemProps { sound: SoundConfig; activeState?: SoundState; onToggle: (id: string) => void; onVolumeChange: (id: string, volume: string) => void; themeHex: string; isGlobalPlay: boolean; }
+interface SoundItemProps { sound: SoundConfig; activeState?: SoundState; onToggle: (id: string) => void;
+   onVolumeChange: (id: string, volume: string) => void; themeHex: string; isGlobalPlay: boolean; globalVolume: number; }
 
 // --- Centralized Category Data ---
-// Note: Folder names match your Windows directories exactly to prevent 404 errors.
 const CATEGORIES: CategoryConfig[] = [
   {
     id: 'beach',
     name: 'Beach',
     bgImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop',
-    themeColor: 'bg-[#0f766e]',
+    themeColor: 'bg-[#0f766e]/40', // Added /85 for transparency
     themeHex: '#0f766e',
     navIcon: Umbrella,
     sounds: [
@@ -44,11 +44,10 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'forest',
     name: 'Forest',
     bgImage: 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#1b4332]',
+    themeColor: 'bg-[#1b4332]/40', // Added /85 for transparency
     themeHex: '#1b4332', 
     navIcon: Trees,
     sounds: [
-      // REPLACE THE TRUNCATED NAME BELOW WITH YOUR EXACT FILE NAME
       { id: 'forest_tent', name: 'Tent Rain', icon: Tent, file: '/sounds/Forest/foresr_rain_on_the_t.ogg' }, 
       { id: 'forest_birds', name: 'Birds', icon: Bird, file: '/sounds/Forest/forest_birds.ogg' },
       { id: 'forest_bonfire', name: 'Bonfire', icon: Flame, file: '/sounds/Forest/forest_bonfire.ogg' },
@@ -69,7 +68,7 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'home',
     name: 'Home',
     bgImage: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069&auto=format&fit=crop',
-    themeColor: 'bg-[#453c38]',
+    themeColor: 'bg-[#453c38]/40',
     themeHex: '#453c38',
     navIcon: Sofa,
     sounds: [
@@ -89,15 +88,14 @@ const CATEGORIES: CategoryConfig[] = [
       { id: 'home_washing', name: 'Washing Machine', icon: Activity, file: '/sounds/Home/washing_machine.ogg' },
       { id: 'home_drops', name: 'Water Drops', icon: Droplet, file: '/sounds/Home/water_drops.ogg' },
       { id: 'home_white', name: 'White Noise', icon: Tv, file: '/sounds/Home/white_noise.ogg' },
-      // REPLACE THE TRUNCATED NAME BELOW WITH YOUR EXACT FILE NAME
       { id: 'home_windout', name: 'Wind Outside', icon: Wind, file: '/sounds/Home/wind_outside_the_h.ogg' },
     ]
   },
   {
     id: 'underwater',
     name: 'Underwater',
-    bgImage: 'https://images.unsplash.com/photo-1682687982501-1e58ea8134d4?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#1e3a8a]',
+    bgImage: 'https://images.unsplash.com/photo-1551244072-5d12893278ab?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#1e3a8a]/40',
     themeHex: '#1e3a8a',
     navIcon: Fish,
     sounds: [
@@ -111,8 +109,8 @@ const CATEGORIES: CategoryConfig[] = [
   {
     id: 'park',
     name: 'Park',
-    bgImage: 'https://images.unsplash.com/photo-1544365558-35aa4afcf11f?q=80&w=2036&auto=format&fit=crop',
-    themeColor: 'bg-[#4d7c0f]',
+    bgImage: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#4d7c0f]/40',
     themeHex: '#4d7c0f',
     navIcon: Trees,
     sounds: [
@@ -128,13 +126,12 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'urban',
     name: 'Urban',
     bgImage: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#1e293b]',
+    themeColor: 'bg-[#1e293b]/40',
     themeHex: '#1e293b',
     navIcon: Building,
     sounds: [
       { id: 'urban_airport', name: 'Airport', icon: Building, file: '/sounds/Urban and Ciry/airport_noise.ogg' },
       { id: 'urban_rain', name: 'City Rain', icon: CloudRain, file: '/sounds/Urban and Ciry/city_rain.ogg' },
-      // REPLACE THE TRUNCATED NAME BELOW
       { id: 'urban_rain_hit', name: 'Rain Hitting', icon: Droplet, file: '/sounds/Urban and Ciry/city_rain_hitting_a_.ogg' },
       { id: 'urban_wind', name: 'City Wind', icon: Wind, file: '/sounds/Urban and Ciry/city_wind.ogg' },
       { id: 'urban_construction', name: 'Construction', icon: HardHat, file: '/sounds/Urban and Ciry/construction_work.ogg' },
@@ -151,7 +148,7 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'countryside',
     name: 'Countryside',
     bgImage: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2032&auto=format&fit=crop',
-    themeColor: 'bg-[#65a30d]',
+    themeColor: 'bg-[#65a30d]/40',
     themeHex: '#65a30d',
     navIcon: Map,
     sounds: [
@@ -173,7 +170,7 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'eastasia',
     name: 'East Asia',
     bgImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#991b1b]',
+    themeColor: 'bg-[#991b1b]/40',
     themeHex: '#991b1b',
     navIcon: Activity,
     sounds: [
@@ -194,7 +191,7 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'instrumental',
     name: 'Instrumental',
     bgImage: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#312e81]',
+    themeColor: 'bg-[#312e81]/40',
     themeHex: '#312e81',
     navIcon: Guitar,
     sounds: [
@@ -209,15 +206,31 @@ const CATEGORIES: CategoryConfig[] = [
       { id: 'inst_shappire', name: 'Sapphire', icon: Activity, file: '/sounds/Instrumental/musical_shappire.ogg' },
       { id: 'inst_violin', name: 'Violin', icon: Activity, file: '/sounds/Instrumental/musical_violin.ogg' },
     ]
+  },
+  {
+    id: 'isochronic',
+    name: 'Isochronic',
+    bgImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2064&auto=format&fit=crop',
+    themeColor: 'bg-[#4c1d95]/40',
+    themeHex: '#4c1d95',
+    navIcon: Brain,
+    sounds: [
+      { id: 'iso_acupunt', name: 'Acupuncture', icon: Activity, file: '/sounds/Isochronic/isocronico_acupunt.ogg' }, 
+      { id: 'iso_circulaci', name: 'Circulation', icon: Activity, file: '/sounds/Isochronic/isocronico_circulaci.ogg' },
+      { id: 'iso_depresion', name: 'Depression', icon: Activity, file: '/sounds/Isochronic/isocronico_depresion.ogg' },
+      { id: 'iso_intelige', name: 'Intelligence', icon: Brain, file: '/sounds/Isochronic/isocronico_intelige.ogg' },
+      { id: 'iso_jaqueca', name: 'Headache', icon: Activity, file: '/sounds/Isochronic/isocronico_jaqueca.ogg' },
+      { id: 'iso_regener', name: 'Regeneration', icon: Activity, file: '/sounds/Isochronic/isocronico_regener.ogg' },
+    ]
   }
 ];
 
-const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onVolumeChange, themeHex, isGlobalPlay }) => {
+const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onVolumeChange, themeHex, isGlobalPlay ,globalVolume}) => {
   const Icon = sound.icon;
   const isActive = activeState?.active || false;
   const volume = activeState?.volume || 50;
 
-  useSound(sound.file, isActive, volume, isGlobalPlay);
+  useSound(sound.file, isActive, volume, isGlobalPlay, globalVolume);
 
   return (
     <div className="flex flex-col items-center select-none group">
@@ -257,9 +270,13 @@ export default function Home() {
   const [isGlobalPlay, setIsGlobalPlay] = useState<boolean>(true);
   const [showTimerMenu, setShowTimerMenu] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null); 
+  
+  // NEW: Global Volume State
+  const [globalVolume, setGlobalVolume] = useState<number>(100);
 
   const activeCategory = CATEGORIES.find(c => c.id === activeCategoryId) || CATEGORIES[0];
 
+  // Timer Countdown Logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (timeLeft !== null && timeLeft > 0 && isGlobalPlay) {
@@ -302,6 +319,7 @@ export default function Home() {
   return (
     <main className="relative h-screen w-full overflow-hidden bg-gray-900 text-white font-sans flex flex-col transition-colors duration-500">
       
+      {/* Background Image Layer */}
       <div 
         key={activeCategory.id} 
         className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-700 ease-in-out" 
@@ -315,23 +333,34 @@ export default function Home() {
           {activeCategory.name}
         </h1>
         
-        <div className={`${activeCategory.themeColor} rounded-2xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-2xl transition-colors duration-500`}>
-          <div className="grid grid-cols-3 gap-y-8 gap-x-4">
-            {activeCategory.sounds.map((sound) => (
-              <SoundItem 
-                key={sound.id}
-                sound={sound}
-                activeState={activeSounds[sound.id]}
-                onToggle={toggleSound}
-                onVolumeChange={changeVolume}
-                themeHex={activeCategory.themeHex}
-                isGlobalPlay={isGlobalPlay}
-              />
-            ))}
+        {/* FIX 3: Render ALL categories but hide the inactive ones. This prevents React from destroying the audio players! */}
+        {CATEGORIES.map((category) => (
+          <div 
+            key={category.id}
+            // FIX 1: Added backdrop-blur-md for frosted glass effect and opacity via the modified themeColor array
+            className={`${category.themeColor} backdrop-blur-md rounded-2xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-2xl transition-all duration-500 ${
+              category.id === activeCategoryId ? 'block' : 'hidden'
+            }`}
+          >
+            <div className="grid grid-cols-3 gap-y-8 gap-x-4">
+              {category.sounds.map((sound) => (
+                <SoundItem 
+                  key={sound.id}
+                  sound={sound}
+                  activeState={activeSounds[sound.id]}
+                  onToggle={toggleSound}
+                  onVolumeChange={changeVolume}
+                  themeHex={category.themeHex}
+                  isGlobalPlay={isGlobalPlay}
+                  globalVolume={globalVolume}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
 
+      {/* Timer Overlay Menu */}
       {showTimerMenu && (
         <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-[#1b2533] p-8 rounded-2xl flex flex-col items-center gap-4 max-w-xs w-full shadow-2xl relative">
@@ -345,24 +374,34 @@ export default function Home() {
         </div>
       )}
 
+      {/* Bottom Navigation Containers */}
       <div className="absolute z-20 bottom-0 left-0 w-full flex flex-col backdrop-blur-md">
         
         <div className="bg-black/60 py-4 px-8 flex justify-between items-center w-full border-b border-white/5 h-20">
-          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col items-center min-w-[60px] text-white/80 hover:text-white transition-colors">
+          {/* Timer Button */}
+          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col items-center min-w-[80px] items-start text-white/80 hover:text-white transition-colors">
             <Timer size={26} strokeWidth={1.5} className={timeLeft ? 'text-green-400' : ''}/>
             {timeLeft !== null && <span className="text-xs mt-1 text-green-400 font-mono">{formatTime(timeLeft)}</span>}
           </button>
           
+          {/* Play/Pause Button */}
           <button onClick={() => setIsGlobalPlay(!isGlobalPlay)} className="text-white hover:scale-110 transition-transform bg-white/10 p-4 rounded-full">
             {isGlobalPlay ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" />}
           </button>
           
-          <button className="min-w-[60px] flex justify-end text-white/80 hover:text-white transition-colors">
-            <Volume2 size={26} strokeWidth={1.5}/>
-          </button>
+          {/* FIX 2: Global Volume Slider Implementation */}
+          <div className="flex items-center gap-3 min-w-[80px] justify-end group">
+            <Volume2 size={26} strokeWidth={1.5} className="text-white/80" />
+            <input 
+              type="range" 
+              min="0" max="100" 
+              value={globalVolume}
+              onChange={(e) => setGlobalVolume(Number(e.target.value))}
+              className="w-16 md:w-24 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white"
+            />
+          </div>
         </div>
 
-        {/* Note the overflow-x-auto here to allow scrolling through many categories! */}
         <div className="bg-black/80 py-4 px-6 flex items-center w-full overflow-x-auto gap-8 no-scrollbar">
           {CATEGORIES.map((category) => {
             const NavIcon = category.navIcon;

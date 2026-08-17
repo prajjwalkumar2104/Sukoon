@@ -1,29 +1,30 @@
 import { useEffect, useRef } from 'react';
 import { Howl } from 'howler';
 
-export function useSound(src: string, isActive: boolean, volume: number, isGlobalPlay: boolean) {
+export function useSound(src: string, isActive: boolean, volume: number, isGlobalPlay: boolean, globalVolume: number) {
   const soundRef = useRef<Howl | null>(null);
+
+  // Math: 80% local volume * 50% global volume = 40% actual volume
+  const effectiveVolume = (volume / 100) * (globalVolume / 100);
 
   useEffect(() => {
     if (!soundRef.current && src) {
       soundRef.current = new Howl({
         src: [src],
         loop: true,
-        volume: volume / 100,
+        volume: effectiveVolume,
         html5: true, 
       });
     }
 
     const sound = soundRef.current;
-    
-    // The sound should only play if it's individually active AND the global player is playing
     const shouldPlay = isActive && isGlobalPlay;
 
     if (shouldPlay && sound && !sound.playing()) {
       sound.play();
-      sound.fade(0, volume / 100, 1000); // 1-second fade in
+      sound.fade(0, effectiveVolume, 1000); 
     } else if (!shouldPlay && sound && sound.playing()) {
-      sound.fade(sound.volume(), 0, 1000); // 1-second fade out
+      sound.fade(sound.volume(), 0, 1000);
       sound.once('fade', () => {
         sound.pause();
       });
@@ -34,13 +35,14 @@ export function useSound(src: string, isActive: boolean, volume: number, isGloba
         sound.unload();
       }
     };
-  }, [src, isActive, isGlobalPlay]); // Dependency added for global play
+  }, [src, isActive, isGlobalPlay]); 
 
+  // Watch for ANY volume changes and update the audio instance immediately
   useEffect(() => {
     if (soundRef.current) {
-      soundRef.current.volume(volume / 100);
+      soundRef.current.volume(effectiveVolume);
     }
-  }, [volume]);
+  }, [effectiveVolume]);
 
   return soundRef;
 }
