@@ -5,7 +5,7 @@ import {
   Wind, CloudRain, Tent, Bird, Waves, Droplet, 
   Play, Pause, Timer, Volume2, Umbrella, 
   Trees, Building, Fish, Sofa, Flame, Guitar, Leaf,
-  Ship, Car, Siren, Users, Train, HardHat, 
+  Maximize, Minimize , Ship, Car, Siren, Users, Train, HardHat, 
   Anchor, Radar, Fan, Tv, Coffee, LucideIcon, 
   X, PawPrint, Bug, Bell, Disc, Activity, Clock, Keyboard, Map, Brain
 } from 'lucide-react';
@@ -25,7 +25,7 @@ const CATEGORIES: CategoryConfig[] = [
     id: 'beach',
     name: 'Beach',
     bgImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop',
-    themeColor: 'bg-[#0f766e]/40', // Added /85 for transparency
+    themeColor: 'bg-[#0f766e]/40', 
     themeHex: '#0f766e',
     navIcon: Umbrella,
     sounds: [
@@ -236,7 +236,7 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
     <div className="flex flex-col items-center select-none group">
      <button 
   onClick={() => onToggle(sound.id)}
-  className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-500 active:scale-90 ${
+  className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-[1.5px] focus:outline-none flex items-center justify-center transition-all duration-500 active:scale-90 ${
           isActive 
             ? 'bg-white border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] animate-[pulse_2s_ease-in-out_infinite]' 
             : 'bg-transparent border-white/50 hover:border-white hover:bg-white/10'
@@ -284,6 +284,38 @@ export default function Home() {
   
   // NEW: Organic Mode State
   const [isOrganicMode, setIsOrganicMode] = useState<boolean>(false);
+
+  // NEW: Zen Mode State
+  const [isZenMode, setIsZenMode] = useState<boolean>(false);
+
+  // Sync Zen Mode state if the user presses 'Esc' to exit fullscreen natively
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsZenMode(false);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleZenMode = async () => {
+    if (!isZenMode) {
+      try {
+        await document.documentElement.requestFullscreen();
+      } catch (err) {
+        console.log("Fullscreen API not supported");
+      }
+      setIsZenMode(true);
+    } else {
+      try {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen();
+        }
+      } catch (err) {}
+      setIsZenMode(false);
+    }
+  };
 
   const activeCategory = CATEGORIES.find(c => c.id === activeCategoryId) || CATEGORIES[0];
 
@@ -340,9 +372,9 @@ export default function Home() {
   // Global Spacebar Control
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent scrolling down when hitting spacebar
-      if (e.code === 'Space' && e.target === document.body) {
-        e.preventDefault();
+      // Trigger ONLY on Spacebar press
+      if (e.code === 'Space') {
+        e.preventDefault(); // Prevents clicking the last focused button AND page scrolling
         setIsGlobalPlay((prev) => !prev);
       }
     };
@@ -388,7 +420,9 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"></div>
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col no-scrollbar pt-12 px-6 overflow-y-auto pb-40">
+      <div className={`relative z-10 flex-1 flex flex-col no-scrollbar pt-12 px-6 overflow-y-auto pb-40 transition-all duration-1000 ${
+  isZenMode ? 'opacity-0 pointer-events-none scale-95' : 'opacity-100 scale-100'
+}`}>
         <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-wide drop-shadow-lg transition-all duration-300">
           {activeCategory.name}
         </h1>
@@ -424,7 +458,7 @@ export default function Home() {
       {showTimerMenu && (
         <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-[#1b2533] p-8 rounded-2xl flex flex-col items-center gap-4 max-w-xs w-full shadow-2xl relative">
-            <button onClick={() => setShowTimerMenu(false)} className="absolute top-4 right-4 text-white/50 hover:text-white"><X size={24} /></button>
+            <button onClick={() => setShowTimerMenu(false)} className="absolute top-4 focus:outline-none right-4 text-white/50 hover:text-white"><X size={24} /></button>
             <h3 className="text-xl font-bold mb-4">Sleep Timer</h3>
             {[15, 30, 60, 120].map(mins => (
               <button key={mins} onClick={() => setTimer(mins)} className="w-full py-3 rounded-lg border border-white/20 hover:bg-white hover:text-black transition-colors">{mins} Minutes</button>
@@ -437,13 +471,15 @@ export default function Home() {
       {/* =========================================
           PREMIUM BOTTOM NAVIGATION DOCK 
           ========================================= */}
-      <div className={`absolute z-20 bottom-0 md:bottom-0 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-[95%] max-w-4xl flex flex-col ${activeCategory.themeColor} backdrop-blur-2xl md:rounded-3xl border-t md:border border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_10px_50px_rgba(0,0,0,0.7)] overflow-hidden transition-colors duration-500`}>
+      <div className={`absolute z-20 bottom-0 md:bottom-0 left-0 md:left-1/2 md:-translate-x-1/2 w-full md:w-[95%] max-w-4xl flex flex-col ${activeCategory.themeColor} backdrop-blur-2xl md:rounded-3xl border-t md:border border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_10px_50px_rgba(0,0,0,0.7)] overflow-hidden transition-colors duration-500 ${
+        isZenMode ? 'translate-y-full opacity-0' : 'translate-y-0 opacity-100'
+      }`}>
         
         {/* Playback Controls (Top Half of Dock) */}
         <div className="py-4 px-6 md:px-8 flex justify-between items-center w-full border-b border-white/5 h-20 bg-white/5">
           
           {/* Timer Button */}
-          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col items-center min-w-[80px] items-start text-white/50 hover:text-white transition-colors">
+          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col focus:outline-none items-center min-w-[80px] items-start text-white/50 hover:text-white transition-colors">
             <Timer size={24} strokeWidth={1.5} className={timeLeft ? 'text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]' : ''}/>
             {timeLeft !== null && <span className="text-[10px] mt-1 text-green-400 font-mono tracking-widest">{formatTime(timeLeft)}</span>}
           </button>
@@ -463,7 +499,7 @@ export default function Home() {
           {/* Master Play/Pause Button - Tactile Solid Design */}
           <button 
             onClick={() => setIsGlobalPlay(!isGlobalPlay)} 
-            className="text-black bg-white hover:bg-gray-200 hover:scale-105 active:scale-95 transition-all duration-300 p-4 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center"
+            className="text-black bg-white hover:bg-gray-200 hover:scale-105 focus:outline-none active:scale-95 transition-all duration-300 p-4 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center justify-center"
           >
             {isGlobalPlay ? (
               <Pause size={24} fill="currentColor" />
@@ -473,9 +509,9 @@ export default function Home() {
             )}
           </button>
           
-          {/* Global Volume Slider */}
-          <div className="flex items-center gap-3 min-w-[80px] justify-end group">
-            <Volume2 size={24} strokeWidth={1.5} className="text-white/50 group-hover:text-white transition-colors" />
+          {/* Global Volume Slider & Zen Mode */}
+          <div className="flex items-center gap-4 min-w-[80px] justify-end group">
+            <Volume2 size={24} strokeWidth={1.5} className="text-white/50 group-hover:text-white transition-colors hidden md:block" />
             <input 
               type="range" 
               min="0" max="100" 
@@ -483,6 +519,14 @@ export default function Home() {
               onChange={(e) => setGlobalVolume(Number(e.target.value))}
               className="w-16 md:w-24 h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-white"
             />
+            {/* NEW: Zen Mode Toggle Button */}
+            <button 
+              onClick={toggleZenMode}
+              className="ml-2 text-white/50 hover:text-white focus:outline-none transition-all hover:scale-110"
+              title="Enter Zen Mode"
+            >
+              <Maximize size={22} strokeWidth={1.5} />
+            </button>
           </div>
         </div>
 
@@ -496,7 +540,7 @@ export default function Home() {
               <button 
                 key={category.id}
                 onClick={() => setActiveCategoryId(category.id)}
-                className={`flex flex-col items-center gap-1.5 transition-all duration-300 min-w-[60px] flex-shrink-0 ${
+                className={`flex flex-col items-center gap-1.5 transition-all focus:outline-none duration-300 min-w-[60px] flex-shrink-0 ${
                   isNavActive ? 'text-white scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]' : 'text-white/40 hover:text-white/80'
                 }`}
               >
@@ -511,6 +555,20 @@ export default function Home() {
             )
           })}
         </div>
+      </div>
+      {/* =========================================
+          ZEN MODE EXIT OVERLAY
+          ========================================= */}
+      <div className={`absolute inset-0 z-50 pointer-events-none flex items-start justify-end p-8 transition-opacity duration-1000 ${
+        isZenMode ? 'opacity-100' : 'opacity-0'
+      }`}>
+        <button 
+          onClick={toggleZenMode}
+          className="pointer-events-auto flex items-center gap-2 bg-black/40 focus:outline-none hover:bg-black/60 backdrop-blur-md text-white/70 hover:text-white px-4 py-2 rounded-full border border-white/10 transition-all duration-300 hover:scale-105"
+        >
+          <Minimize size={18} />
+          <span className="text-sm font-light tracking-wider">Exit Zen</span>
+        </button>
       </div>
     </main>
   );
