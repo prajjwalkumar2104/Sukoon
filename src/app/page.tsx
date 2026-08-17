@@ -234,12 +234,12 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
 
   return (
     <div className="flex flex-col items-center select-none group">
-      <button 
-        onClick={() => onToggle(sound.id)}
-        className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-300 ${
-          isActive ? 'bg-white border-white' : 'bg-transparent border-white hover:bg-white/10'
-        }`}
-      >
+     <button 
+  onClick={() => onToggle(sound.id)}
+  className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-300 active:scale-90 ${
+    isActive ? 'bg-white border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'bg-transparent border-white/50 hover:border-white hover:bg-white/10'
+  }`}
+>
         <Icon 
           size={32} 
           style={{ color: isActive ? themeHex : '#ffffff' }}
@@ -328,7 +328,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"></div>
       </div>
 
-      <div className="relative z-10 flex-1 flex flex-col pt-12 px-6 overflow-y-auto pb-40">
+      <div className="relative z-10 flex-1 flex flex-col no-scrollbar pt-12 px-6 overflow-y-auto pb-40">
         <h1 className="text-4xl md:text-5xl font-bold mb-6 tracking-wide drop-shadow-lg transition-all duration-300">
           {activeCategory.name}
         </h1>
@@ -338,7 +338,7 @@ export default function Home() {
           <div 
             key={category.id}
             // FIX 1: Added backdrop-blur-md for frosted glass effect and opacity via the modified themeColor array
-            className={`${category.themeColor} backdrop-blur-md rounded-2xl p-6 md:p-8 max-w-2xl mx-auto w-full shadow-2xl transition-all duration-500 ${
+            className={`${category.themeColor} backdrop-blur-xl rounded-3xl border border-white/10 p-6 md:p-8 max-w-2xl mx-auto w-full shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] transition-all duration-500 ${
               category.id === activeCategoryId ? 'block' : 'hidden'
             }`}
           >
