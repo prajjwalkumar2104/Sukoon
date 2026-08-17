@@ -402,7 +402,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-black/80 py-4 px-6 flex items-center w-full overflow-x-auto gap-8 no-scrollbar">
+        {/* Dynamic Environment Navigation Bar */}
+        <div className="bg-black/80 py-4 px-6 flex items-center justify-between md:justify-evenly w-full overflow-x-auto gap-4 no-scrollbar">
           {CATEGORIES.map((category) => {
             const NavIcon = category.navIcon;
             const isNavActive = activeCategoryId === category.id;
@@ -411,7 +412,7 @@ export default function Home() {
               <button 
                 key={category.id}
                 onClick={() => setActiveCategoryId(category.id)}
-                className={`flex flex-col items-center gap-1 transition-all duration-300 min-w-[60px] ${
+                className={`flex flex-col items-center gap-1 transition-all duration-300 min-w-[60px] flex-shrink-0 ${
                   isNavActive ? 'text-white scale-110' : 'text-white/50 hover:text-white/80'
                 }`}
               >
