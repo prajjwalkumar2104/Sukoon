@@ -3,68 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Wind, CloudRain, Tent, Bird, Waves, Droplet, 
-  Play, Pause, Timer, Volume2, Heart, Umbrella, 
+  Play, Pause, Timer, Volume2, Umbrella, 
   Trees, Building, Fish, Sofa, Flame, Guitar, 
   Ship, Car, Siren, Users, Train, HardHat, 
-  Anchor, Radar, Fan, Tv, Coffee, LucideIcon, X
+  Anchor, Radar, Fan, Tv, Coffee, LucideIcon, 
+  X, PawPrint, Bug, Bell, Disc, Activity, Clock, Keyboard, Map
 } from 'lucide-react';
-
-
-import { useSound } from '../hooks/useSound'; // Ensure this is imported!
+import { useSound } from '../hooks/useSound';
 
 // --- TypeScript Interfaces ---
-interface SoundState {
-  active: boolean;
-  volume: number;
-}
-
+interface SoundState { active: boolean; volume: number; }
 type ActiveSounds = Record<string, SoundState>;
-
-interface SoundConfig {
-  id: string;
-  name: string;
-  icon: LucideIcon;
-  file: string;
-}
-
-interface CategoryConfig {
-  id: string;
-  name: string;
-  bgImage: string;
-  themeColor: string; // Used for the card background
-  themeHex: string;   // Used to color the active icon safely
-  navIcon: LucideIcon;
-  sounds: SoundConfig[];
-}
-
-interface SoundItemProps {
-  sound: SoundConfig;
-  activeState?: SoundState;
-  onToggle: (id: string) => void;
-  onVolumeChange: (id: string, volume: string) => void;
-  themeHex: string;
-  isGlobalPlay: boolean;
-}
-// -----------------------------
+interface SoundConfig { id: string; name: string; icon: LucideIcon; file: string; }
+interface CategoryConfig { id: string; name: string; bgImage: string; themeColor: string; themeHex: string; navIcon: LucideIcon; sounds: SoundConfig[]; }
+interface SoundItemProps { sound: SoundConfig; activeState?: SoundState; onToggle: (id: string) => void; onVolumeChange: (id: string, volume: string) => void; themeHex: string; isGlobalPlay: boolean; }
 
 // --- Centralized Category Data ---
+// Note: Folder names match your Windows directories exactly to prevent 404 errors.
 const CATEGORIES: CategoryConfig[] = [
-  {
-    id: 'forest',
-    name: 'Forest',
-    bgImage: 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#1b4332]',
-    themeHex: '#1b4332', 
-    navIcon: Trees,
-    sounds: [
-      { id: 'forest_wind', name: 'Wind', icon: Wind, file: '/sounds/forest_wind.wav' },
-      { id: 'forest_rain', name: 'Rain', icon: CloudRain, file: '/sounds/forest_rain.mp3' },
-      { id: 'forest_tent', name: 'Rain on a tent', icon: Tent, file: '/sounds/tent.mp3' },
-      { id: 'forest_birds', name: 'Birds', icon: Bird, file: '/sounds/birds.mp3' },
-      { id: 'forest_river', name: 'River', icon: Waves, file: '/sounds/river.mp3' },
-      { id: 'forest_drops', name: 'Drops', icon: Droplet, file: '/sounds/drops.mp3' },
-    ]
-  },
   {
     id: 'beach',
     name: 'Beach',
@@ -73,42 +29,40 @@ const CATEGORIES: CategoryConfig[] = [
     themeHex: '#0f766e',
     navIcon: Umbrella,
     sounds: [
-      { id: 'beach_waves', name: 'Waves', icon: Waves, file: '/sounds/waves.mp3' },
-      { id: 'beach_seagulls', name: 'Seagulls', icon: Bird, file: '/sounds/seagulls.mp3' },
-      { id: 'beach_campfire', name: 'Campfire', icon: Flame, file: '/sounds/campfire.mp3' },
-      { id: 'beach_rain', name: 'Rain', icon: CloudRain, file: '/sounds/beach_rain.mp3' },
-      { id: 'beach_guitar', name: 'Guitar', icon: Guitar, file: '/sounds/guitar.mp3' },
-      { id: 'beach_boat', name: 'Boat', icon: Ship, file: '/sounds/boat.mp3' },
+      { id: 'beach_bonfire', name: 'Bonfire', icon: Flame, file: '/sounds/Beach/beach_bonfire.ogg' },
+      { id: 'beach_guitar', name: 'Guitar', icon: Guitar, file: '/sounds/Beach/beach_guitar.ogg' },
+      { id: 'beach_storm', name: 'Storm', icon: CloudRain, file: '/sounds/Beach/beach_storm.ogg' },
+      { id: 'beach_boat', name: 'Boat', icon: Ship, file: '/sounds/Beach/boat.ogg' },
+      { id: 'beach_melody', name: 'Melody', icon: Activity, file: '/sounds/Beach/guitar_melody.ogg' },
+      { id: 'beach_waves', name: 'Ocean Waves', icon: Waves, file: '/sounds/Beach/ocean_waves.ogg' },
+      { id: 'beach_rain', name: 'Rain', icon: CloudRain, file: '/sounds/Beach/rain_on_the_beach.ogg' },
+      { id: 'beach_rowboat', name: 'Rowboat', icon: Anchor, file: '/sounds/Beach/rowboat.ogg' },
+      { id: 'beach_seagull', name: 'Seagulls', icon: Bird, file: '/sounds/Beach/seagull.ogg' },
     ]
   },
   {
-    id: 'urban',
-    name: 'Urban',
-    bgImage: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#1e293b]',
-    themeHex: '#1e293b',
-    navIcon: Building,
+    id: 'forest',
+    name: 'Forest',
+    bgImage: 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#1b4332]',
+    themeHex: '#1b4332', 
+    navIcon: Trees,
     sounds: [
-      { id: 'urban_traffic', name: 'Traffic', icon: Car, file: '/sounds/traffic.mp3' },
-      { id: 'urban_police', name: 'Police', icon: Siren, file: '/sounds/police.mp3' },
-      { id: 'urban_people', name: 'People', icon: Users, file: '/sounds/people.mp3' },
-      { id: 'urban_train', name: 'Train', icon: Train, file: '/sounds/train.mp3' },
-      { id: 'urban_works', name: 'Works', icon: HardHat, file: '/sounds/works.mp3' },
-      { id: 'urban_wind', name: 'Wind', icon: Wind, file: '/sounds/urban_wind.mp3' },
-    ]
-  },
-  {
-    id: 'underwater',
-    name: 'Underwater',
-    bgImage: 'https://images.unsplash.com/photo-1682687982501-1e58ea8134d4?q=80&w=2070&auto=format&fit=crop',
-    themeColor: 'bg-[#1e3a8a]',
-    themeHex: '#1e3a8a',
-    navIcon: Fish,
-    sounds: [
-      { id: 'under_bubbles', name: 'Air bubbles', icon: Droplet, file: '/sounds/bubbles.mp3' },
-      { id: 'under_whale', name: 'Whale', icon: Waves, file: '/sounds/whale.mp3' },
-      { id: 'under_sea', name: 'Under the sea', icon: Anchor, file: '/sounds/undersea.mp3' },
-      { id: 'under_sonar', name: 'Sonar', icon: Radar, file: '/sounds/sonar.mp3' },
+      // REPLACE THE TRUNCATED NAME BELOW WITH YOUR EXACT FILE NAME
+      { id: 'forest_tent', name: 'Tent Rain', icon: Tent, file: '/sounds/Forest/foresr_rain_on_the_t.ogg' }, 
+      { id: 'forest_birds', name: 'Birds', icon: Bird, file: '/sounds/Forest/forest_birds.ogg' },
+      { id: 'forest_bonfire', name: 'Bonfire', icon: Flame, file: '/sounds/Forest/forest_bonfire.ogg' },
+      { id: 'forest_cricket', name: 'Cricket', icon: Bug, file: '/sounds/Forest/forest_cricket.ogg' },
+      { id: 'forest_frogs', name: 'Frogs', icon: Bug, file: '/sounds/Forest/forest_frogs.ogg' },
+      { id: 'forest_owl1', name: 'Owl 1', icon: Bird, file: '/sounds/Forest/forest_owl1.ogg' },
+      { id: 'forest_owl2', name: 'Owl 2', icon: Bird, file: '/sounds/Forest/forest_owl2.ogg' },
+      { id: 'forest_rain', name: 'Rain', icon: CloudRain, file: '/sounds/Forest/forest_rain.ogg' },
+      { id: 'forest_river', name: 'River', icon: Waves, file: '/sounds/Forest/forest_river.ogg' },
+      { id: 'forest_storm', name: 'Storm', icon: CloudRain, file: '/sounds/Forest/forest_storm.ogg' },
+      { id: 'forest_waterfall', name: 'Waterfall', icon: Droplet, file: '/sounds/Forest/forest_waterfall.ogg' },
+      { id: 'forest_wind', name: 'Wind', icon: Wind, file: '/sounds/Forest/forest_wind.ogg' },
+      { id: 'forest_wolf', name: 'Wolf', icon: PawPrint, file: '/sounds/Forest/forest_wolf.ogg' },
+      { id: 'forest_woodpecker', name: 'Woodpecker', icon: Bird, file: '/sounds/Forest/forest_woodpecker.ogg' },
     ]
   },
   {
@@ -119,22 +73,150 @@ const CATEGORIES: CategoryConfig[] = [
     themeHex: '#453c38',
     navIcon: Sofa,
     sounds: [
-      { id: 'home_fan', name: 'Fan', icon: Fan, file: '/sounds/fan.mp3' },
-      { id: 'home_rain_window', name: 'Rain on window', icon: CloudRain, file: '/sounds/window_rain.mp3' },
-      { id: 'home_tv', name: 'White noise', icon: Tv, file: '/sounds/whitenoise.mp3' },
-      { id: 'home_cafe', name: 'Coffee', icon: Coffee, file: '/sounds/coffee.mp3' },
+      { id: 'home_brown', name: 'Brown Noise', icon: Tv, file: '/sounds/Home/brown_noise.ogg' },
+      { id: 'home_cat', name: 'Cat', icon: PawPrint, file: '/sounds/Home/cat.ogg' },
+      { id: 'home_catmeow', name: 'Cat Meowing', icon: PawPrint, file: '/sounds/Home/cat_meowing.ogg' },
+      { id: 'home_coffee', name: 'Coffee Maker', icon: Coffee, file: '/sounds/Home/coffee_maker.ogg' },
+      { id: 'home_fan', name: 'Fan', icon: Fan, file: '/sounds/Home/fan.ogg' },
+      { id: 'home_fire', name: 'Fireplace', icon: Flame, file: '/sounds/Home/fireplace.ogg' },
+      { id: 'home_hairdryer', name: 'Hair Dryer', icon: Wind, file: '/sounds/Home/hair_dryer.ogg' },
+      { id: 'home_heart', name: 'Heartbeats', icon: Activity, file: '/sounds/Home/heartbeats.ogg' },
+      { id: 'home_keyboard', name: 'Keyboard', icon: Keyboard, file: '/sounds/Home/keyboard_typing.ogg' },
+      { id: 'home_pink', name: 'Pink Noise', icon: Tv, file: '/sounds/Home/pink_noise.ogg' },
+      { id: 'home_shower', name: 'Shower', icon: Droplet, file: '/sounds/Home/shower.ogg' },
+      { id: 'home_clock', name: 'Clock', icon: Clock, file: '/sounds/Home/ticking_clock.ogg' },
+      { id: 'home_vaccum', name: 'Vacuum', icon: Wind, file: '/sounds/Home/vaccum_cleaner.ogg' },
+      { id: 'home_washing', name: 'Washing Machine', icon: Activity, file: '/sounds/Home/washing_machine.ogg' },
+      { id: 'home_drops', name: 'Water Drops', icon: Droplet, file: '/sounds/Home/water_drops.ogg' },
+      { id: 'home_white', name: 'White Noise', icon: Tv, file: '/sounds/Home/white_noise.ogg' },
+      // REPLACE THE TRUNCATED NAME BELOW WITH YOUR EXACT FILE NAME
+      { id: 'home_windout', name: 'Wind Outside', icon: Wind, file: '/sounds/Home/wind_outside_the_h.ogg' },
+    ]
+  },
+  {
+    id: 'underwater',
+    name: 'Underwater',
+    bgImage: 'https://images.unsplash.com/photo-1682687982501-1e58ea8134d4?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#1e3a8a]',
+    themeHex: '#1e3a8a',
+    navIcon: Fish,
+    sounds: [
+      { id: 'under_bubbles', name: 'Bubbles', icon: Droplet, file: '/sounds/Underwater/bubbles.ogg' },
+      { id: 'under_whale', name: 'Whales', icon: Waves, file: '/sounds/Underwater/little_whales.ogg' },
+      { id: 'under_sonar', name: 'Sonar', icon: Radar, file: '/sounds/Underwater/submarine_sonar.ogg' },
+      { id: 'under_sea', name: 'Under the Sea', icon: Anchor, file: '/sounds/Underwater/under_the_sea.ogg' },
+      { id: 'under_ambient', name: 'Ambient', icon: Waves, file: '/sounds/Underwater/underwater_ambient.ogg' },
+    ]
+  },
+  {
+    id: 'park',
+    name: 'Park',
+    bgImage: 'https://images.unsplash.com/photo-1544365558-35aa4afcf11f?q=80&w=2036&auto=format&fit=crop',
+    themeColor: 'bg-[#4d7c0f]',
+    themeHex: '#4d7c0f',
+    navIcon: Trees,
+    sounds: [
+      { id: 'park_kids', name: 'Children Playing', icon: Users, file: '/sounds/Park/children_playing.ogg' },
+      { id: 'park_dog', name: 'Dog', icon: PawPrint, file: '/sounds/Park/dog_in_the_park.ogg' },
+      { id: 'park_ducks', name: 'Ducks', icon: Bird, file: '/sounds/Park/ducks.ogg' },
+      { id: 'park_lake', name: 'Lake Waves', icon: Waves, file: '/sounds/Park/lake_waves.ogg' },
+      { id: 'park_birds', name: 'Birds', icon: Bird, file: '/sounds/Park/park_birds.ogg' },
+      { id: 'park_fountain', name: 'Fountain', icon: Droplet, file: '/sounds/Park/park_fountain.ogg' },
+    ]
+  },
+  {
+    id: 'urban',
+    name: 'Urban',
+    bgImage: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#1e293b]',
+    themeHex: '#1e293b',
+    navIcon: Building,
+    sounds: [
+      { id: 'urban_airport', name: 'Airport', icon: Building, file: '/sounds/Urban and Ciry/airport_noise.ogg' },
+      { id: 'urban_rain', name: 'City Rain', icon: CloudRain, file: '/sounds/Urban and Ciry/city_rain.ogg' },
+      // REPLACE THE TRUNCATED NAME BELOW
+      { id: 'urban_rain_hit', name: 'Rain Hitting', icon: Droplet, file: '/sounds/Urban and Ciry/city_rain_hitting_a_.ogg' },
+      { id: 'urban_wind', name: 'City Wind', icon: Wind, file: '/sounds/Urban and Ciry/city_wind.ogg' },
+      { id: 'urban_construction', name: 'Construction', icon: HardHat, file: '/sounds/Urban and Ciry/construction_work.ogg' },
+      { id: 'urban_crowd', name: 'Crowd', icon: Users, file: '/sounds/Urban and Ciry/crowd_noise.ogg' },
+      { id: 'urban_train_in', name: 'Inside Train', icon: Train, file: '/sounds/Urban and Ciry/inside_a_train.ogg' },
+      { id: 'urban_pigeons', name: 'Pigeons', icon: Bird, file: '/sounds/Urban and Ciry/pigeons.ogg' },
+      { id: 'urban_police', name: 'Police Siren', icon: Siren, file: '/sounds/Urban and Ciry/police_siren.ogg' },
+      { id: 'urban_traffic', name: 'Traffic', icon: Car, file: '/sounds/Urban and Ciry/traffic.ogg' },
+      { id: 'urban_train_pass', name: 'Train Passing', icon: Train, file: '/sounds/Urban and Ciry/train_passing.ogg' },
+      { id: 'urban_truck', name: 'Truck Engine', icon: Car, file: '/sounds/Urban and Ciry/truck_engine.ogg' },
+    ]
+  },
+  {
+    id: 'countryside',
+    name: 'Countryside',
+    bgImage: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2032&auto=format&fit=crop',
+    themeColor: 'bg-[#65a30d]',
+    themeHex: '#65a30d',
+    navIcon: Map,
+    sounds: [
+      { id: 'country_cow', name: 'Cow', icon: PawPrint, file: '/sounds/Canp Field Countryside/cow.ogg' },
+      { id: 'country_dog', name: 'Dog', icon: PawPrint, file: '/sounds/Canp Field Countryside/dog.ogg' },
+      { id: 'country_birds', name: 'Field Birds', icon: Bird, file: '/sounds/Canp Field Countryside/field_birds.ogg' },
+      { id: 'country_hens', name: 'Hens', icon: Bird, file: '/sounds/Canp Field Countryside/hens.ogg' },
+      { id: 'country_horse', name: 'Horse', icon: PawPrint, file: '/sounds/Canp Field Countryside/horse.ogg' },
+      { id: 'country_pigs', name: 'Pigs', icon: PawPrint, file: '/sounds/Canp Field Countryside/pigs.ogg' },
+      { id: 'country_rain', name: 'Rain', icon: CloudRain, file: '/sounds/Canp Field Countryside/rain_in_the_field.ogg' },
+      { id: 'country_rooster', name: 'Rooster', icon: Bird, file: '/sounds/Canp Field Countryside/rooster.ogg' },
+      { id: 'country_sheep', name: 'Sheep', icon: PawPrint, file: '/sounds/Canp Field Countryside/sheep.ogg' },
+      { id: 'country_storm', name: 'Storm', icon: CloudRain, file: '/sounds/Canp Field Countryside/storm_in_the_field.ogg' },
+      { id: 'country_stream', name: 'Stream', icon: Waves, file: '/sounds/Canp Field Countryside/stream.ogg' },
+      { id: 'country_wind', name: 'Wind', icon: Wind, file: '/sounds/Canp Field Countryside/wind_in_the_field.ogg' },
+    ]
+  },
+  {
+    id: 'eastasia',
+    name: 'East Asia',
+    bgImage: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#991b1b]',
+    themeHex: '#991b1b',
+    navIcon: Activity,
+    sounds: [
+      { id: 'asia_bamboo', name: 'Bamboo Wind', icon: Wind, file: '/sounds/East Asia/bamboo_wind.ogg' },
+      { id: 'asia_flute', name: 'Chinese Flute', icon: Activity, file: '/sounds/East Asia/chinese_flute.ogg' },
+      { id: 'asia_duduk', name: 'Duduk', icon: Activity, file: '/sounds/East Asia/duduk.ogg' },
+      { id: 'asia_cicada', name: 'Cicada', icon: Bug, file: '/sounds/East Asia/japanese_cicada.ogg' },
+      { id: 'asia_om', name: 'Om', icon: Activity, file: '/sounds/East Asia/om.ogg' },
+      { id: 'asia_ritual', name: 'Ritual', icon: Flame, file: '/sounds/East Asia/ritual.ogg' },
+      { id: 'asia_singing', name: 'Singing Bowl', icon: Disc, file: '/sounds/East Asia/singing_bowl.ogg' },
+      { id: 'asia_taiko', name: 'Taiko', icon: Activity, file: '/sounds/East Asia/taiko.ogg' },
+      { id: 'asia_tibetan', name: 'Tibetan Bowl', icon: Disc, file: '/sounds/East Asia/tibetan_bowl.ogg' },
+      { id: 'asia_silver', name: 'Tibetan Silver', icon: Bell, file: '/sounds/East Asia/tibetan_silver.ogg' },
+      { id: 'asia_chimes', name: 'Wind Chimes', icon: Bell, file: '/sounds/East Asia/wind_chimes.ogg' },
+    ]
+  },
+  {
+    id: 'instrumental',
+    name: 'Instrumental',
+    bgImage: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=2070&auto=format&fit=crop',
+    themeColor: 'bg-[#312e81]',
+    themeHex: '#312e81',
+    navIcon: Guitar,
+    sounds: [
+      { id: 'inst_andantino', name: 'Andantino', icon: Activity, file: '/sounds/Instrumental/musical_andantino.ogg' },
+      { id: 'inst_relax', name: 'Deep Relax', icon: Activity, file: '/sounds/Instrumental/musical_deeprelax.ogg' },
+      { id: 'inst_gymnopedie', name: 'Gymnopedie', icon: Activity, file: '/sounds/Instrumental/musical_gymnopedie.ogg' },
+      { id: 'inst_harp', name: 'Harp', icon: Activity, file: '/sounds/Instrumental/musical_harp.ogg' },
+      { id: 'inst_kalimba', name: 'Kalimba', icon: Activity, file: '/sounds/Instrumental/musical_kalimba.ogg' },
+      { id: 'inst_meditation', name: 'Meditation', icon: Activity, file: '/sounds/Instrumental/musical_meditation.ogg' },
+      { id: 'inst_nana', name: 'Nana', icon: Activity, file: '/sounds/Instrumental/musical_nana.ogg' },
+      { id: 'inst_neptune', name: 'Neptune', icon: Activity, file: '/sounds/Instrumental/musical_neptune.ogg' },
+      { id: 'inst_shappire', name: 'Sapphire', icon: Activity, file: '/sounds/Instrumental/musical_shappire.ogg' },
+      { id: 'inst_violin', name: 'Violin', icon: Activity, file: '/sounds/Instrumental/musical_violin.ogg' },
     ]
   }
 ];
-
-
 
 const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onVolumeChange, themeHex, isGlobalPlay }) => {
   const Icon = sound.icon;
   const isActive = activeState?.active || false;
   const volume = activeState?.volume || 50;
 
-  // The hook is now active!
   useSound(sound.file, isActive, volume, isGlobalPlay);
 
   return (
@@ -147,7 +229,6 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
       >
         <Icon 
           size={32} 
-          // Bypassing Tailwind's dynamic class bug with inline styles
           style={{ color: isActive ? themeHex : '#ffffff' }}
           className="transition-colors duration-300" 
           strokeWidth={1.5}
@@ -158,16 +239,12 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
         {isActive ? (
           <input 
             type="range" 
-            min="0" 
-            max="100" 
-            value={volume}
+            min="0" max="100" value={volume}
             onChange={(e) => onVolumeChange(sound.id, e.target.value)}
             className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white"
           />
         ) : (
-          <span className="text-sm font-light tracking-wide text-white/90 line-clamp-2 leading-tight">
-            {sound.name}
-          </span>
+          <span className="text-sm font-light tracking-wide text-white/90 line-clamp-2 leading-tight">{sound.name}</span>
         )}
       </div>
     </div>
@@ -177,15 +254,12 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
 export default function Home() {
   const [activeSounds, setActiveSounds] = useState<ActiveSounds>({});
   const [activeCategoryId, setActiveCategoryId] = useState<string>(CATEGORIES[0].id);
-  
-  // Re-added Timer and Global Play states
   const [isGlobalPlay, setIsGlobalPlay] = useState<boolean>(true);
   const [showTimerMenu, setShowTimerMenu] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null); 
 
   const activeCategory = CATEGORIES.find(c => c.id === activeCategoryId) || CATEGORIES[0];
 
-  // Timer Countdown Logic
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (timeLeft !== null && timeLeft > 0 && isGlobalPlay) {
@@ -258,48 +332,28 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Timer Overlay Menu */}
       {showTimerMenu && (
         <div className="absolute inset-0 z-30 bg-black/80 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-[#1b2533] p-8 rounded-2xl flex flex-col items-center gap-4 max-w-xs w-full shadow-2xl relative">
-            <button onClick={() => setShowTimerMenu(false)} className="absolute top-4 right-4 text-white/50 hover:text-white">
-              <X size={24} />
-            </button>
+            <button onClick={() => setShowTimerMenu(false)} className="absolute top-4 right-4 text-white/50 hover:text-white"><X size={24} /></button>
             <h3 className="text-xl font-bold mb-4">Sleep Timer</h3>
             {[15, 30, 60, 120].map(mins => (
-              <button 
-                key={mins} onClick={() => setTimer(mins)}
-                className="w-full py-3 rounded-lg border border-white/20 hover:bg-white hover:text-black transition-colors"
-              >
-                {mins} Minutes
-              </button>
+              <button key={mins} onClick={() => setTimer(mins)} className="w-full py-3 rounded-lg border border-white/20 hover:bg-white hover:text-black transition-colors">{mins} Minutes</button>
             ))}
-            {timeLeft !== null && (
-              <button onClick={() => setTimeLeft(null)} className="w-full py-3 mt-2 rounded-lg text-red-400 hover:bg-red-400/10 transition-colors">
-                Cancel Active Timer
-              </button>
-            )}
+            {timeLeft !== null && <button onClick={() => setTimeLeft(null)} className="w-full py-3 mt-2 rounded-lg text-red-400 hover:bg-red-400/10 transition-colors">Cancel Active Timer</button>}
           </div>
         </div>
       )}
 
-      {/* Bottom Navigation Containers */}
       <div className="absolute z-20 bottom-0 left-0 w-full flex flex-col backdrop-blur-md">
         
-        {/* Playback Controls */}
         <div className="bg-black/60 py-4 px-8 flex justify-between items-center w-full border-b border-white/5 h-20">
-          <button 
-            onClick={() => setShowTimerMenu(true)} 
-            className="flex flex-col items-center min-w-[60px] text-white/80 hover:text-white transition-colors"
-          >
+          <button onClick={() => setShowTimerMenu(true)} className="flex flex-col items-center min-w-[60px] text-white/80 hover:text-white transition-colors">
             <Timer size={26} strokeWidth={1.5} className={timeLeft ? 'text-green-400' : ''}/>
             {timeLeft !== null && <span className="text-xs mt-1 text-green-400 font-mono">{formatTime(timeLeft)}</span>}
           </button>
           
-          <button 
-            onClick={() => setIsGlobalPlay(!isGlobalPlay)}
-            className="text-white hover:scale-110 transition-transform bg-white/10 p-4 rounded-full"
-          >
+          <button onClick={() => setIsGlobalPlay(!isGlobalPlay)} className="text-white hover:scale-110 transition-transform bg-white/10 p-4 rounded-full">
             {isGlobalPlay ? <Pause size={28} fill="currentColor" /> : <Play size={28} fill="currentColor" />}
           </button>
           
@@ -308,8 +362,8 @@ export default function Home() {
           </button>
         </div>
 
-        {/* Dynamic Environment Navigation Bar */}
-        <div className="bg-black/80 py-4 px-6 flex justify-around items-center w-full">
+        {/* Note the overflow-x-auto here to allow scrolling through many categories! */}
+        <div className="bg-black/80 py-4 px-6 flex items-center w-full overflow-x-auto gap-8 no-scrollbar">
           {CATEGORIES.map((category) => {
             const NavIcon = category.navIcon;
             const isNavActive = activeCategoryId === category.id;
@@ -318,7 +372,7 @@ export default function Home() {
               <button 
                 key={category.id}
                 onClick={() => setActiveCategoryId(category.id)}
-                className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+                className={`flex flex-col items-center gap-1 transition-all duration-300 min-w-[60px] ${
                   isNavActive ? 'text-white scale-110' : 'text-white/50 hover:text-white/80'
                 }`}
               >
