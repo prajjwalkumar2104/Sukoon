@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Wind, CloudRain, Tent, Bird, Waves, Droplet, 
   Play, Pause, Timer, Volume2, Umbrella, 
-  Trees, Building, Fish, Sofa, Flame, Guitar, 
+  Trees, Building, Fish, Sofa, Flame, Guitar, Leaf,
   Ship, Car, Siren, Users, Train, HardHat, 
   Anchor, Radar, Fan, Tv, Coffee, LucideIcon, 
   X, PawPrint, Bug, Bell, Disc, Activity, Clock, Keyboard, Map, Brain
@@ -281,6 +281,9 @@ export default function Home() {
   
   // NEW: Global Volume State
   const [globalVolume, setGlobalVolume] = useState<number>(100);
+  
+  // NEW: Organic Mode State
+  const [isOrganicMode, setIsOrganicMode] = useState<boolean>(false);
 
   const activeCategory = CATEGORIES.find(c => c.id === activeCategoryId) || CATEGORIES[0];
 
@@ -297,6 +300,42 @@ export default function Home() {
     }
     return () => clearInterval(interval);
   }, [timeLeft, isGlobalPlay]);
+
+  // Organic Auto-Modulation Logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    // Only modulate if Organic Mode is ON and the master player is playing
+    if (isOrganicMode && isGlobalPlay) {
+      interval = setInterval(() => {
+        setActiveSounds(prev => {
+          const newSounds = { ...prev };
+          let hasChanges = false;
+          
+          Object.keys(newSounds).forEach(id => {
+            if (newSounds[id].active) {
+              // Generate a random shift between -5% and +5%
+              const shift = Math.floor(Math.random() * 11) - 5; 
+              let newVol = newSounds[id].volume + shift;
+              
+              // Clamp the volume so it doesn't go below 10% or above 100%
+              newVol = Math.max(10, Math.min(100, newVol)); 
+              
+              if (newSounds[id].volume !== newVol) {
+                newSounds[id] = { ...newSounds[id], volume: newVol };
+                hasChanges = true;
+              }
+            }
+          });
+          
+          // Only trigger a re-render if a volume actually changed
+          return hasChanges ? newSounds : prev; 
+        });
+      }, 4000); // Modulates every 4 seconds
+    }
+    
+    return () => clearInterval(interval);
+  }, [isOrganicMode, isGlobalPlay]);
 
   // Global Spacebar Control
   useEffect(() => {
@@ -395,7 +434,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Bottom Navigation Containers */}
       {/* =========================================
           PREMIUM BOTTOM NAVIGATION DOCK 
           ========================================= */}
@@ -409,6 +447,18 @@ export default function Home() {
             <Timer size={24} strokeWidth={1.5} className={timeLeft ? 'text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.5)]' : ''}/>
             {timeLeft !== null && <span className="text-[10px] mt-1 text-green-400 font-mono tracking-widest">{formatTime(timeLeft)}</span>}
           </button>
+
+          <button 
+              onClick={() => setIsOrganicMode(!isOrganicMode)} 
+              className="flex flex-col items-center justify-center text-white/50 hover:text-white transition-all w-10 relative group"
+              title="Organic Auto-Modulation"
+            >
+              <Leaf size={24} strokeWidth={1.5} className={`transition-all duration-500 ${isOrganicMode ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse' : ''}`}/>
+              {/* Tooltip on hover */}
+              {/* <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-black/80 text-[10px] px-2 py-1 rounded-md text-white/90 whitespace-nowrap">
+                {isOrganicMode ? 'Organic Mode: ON' : 'Organic Mode: OFF'}
+              </span> */}
+            </button>
           
           {/* Master Play/Pause Button - Tactile Solid Design */}
           <button 
