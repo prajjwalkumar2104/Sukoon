@@ -48,7 +48,7 @@ const CATEGORIES: CategoryConfig[] = [
     themeHex: '#1b4332', 
     navIcon: Trees,
     sounds: [
-      { id: 'forest_tent', name: 'Tent Rain', icon: Tent, file: '/sounds/Forest/foresr_rain_on_the_t.ogg' }, 
+      { id: 'forest_tent', name: 'Tent Rain', icon: Tent, file: '/sounds/Forest/foresr_rain_on_the_tent.ogg' }, 
       { id: 'forest_birds', name: 'Birds', icon: Bird, file: '/sounds/Forest/forest_birds.ogg' },
       { id: 'forest_bonfire', name: 'Bonfire', icon: Flame, file: '/sounds/Forest/forest_bonfire.ogg' },
       { id: 'forest_cricket', name: 'Cricket', icon: Bug, file: '/sounds/Forest/forest_cricket.ogg' },
@@ -132,7 +132,7 @@ const CATEGORIES: CategoryConfig[] = [
     sounds: [
       { id: 'urban_airport', name: 'Airport', icon: Building, file: '/sounds/Urban/airport_noise.ogg' },
       { id: 'urban_rain', name: 'City Rain', icon: CloudRain, file: '/sounds/Urban/city_rain.ogg' },
-      { id: 'urban_rain_hit', name: 'Rain Hitting', icon: Droplet, file: '/sounds/Urban/city_rain_hitting_a_.ogg' },
+      { id: 'urban_rain_hit', name: 'Rain Hitting', icon: Droplet, file: '/sounds/Urban/city_rain_hitting_a_window.ogg' },
       { id: 'urban_wind', name: 'City Wind', icon: Wind, file: '/sounds/Urban/city_wind.ogg' },
       { id: 'urban_construction', name: 'Construction', icon: HardHat, file: '/sounds/Urban/construction_work.ogg' },
       { id: 'urban_crowd', name: 'Crowd', icon: Users, file: '/sounds/Urban/crowd_noise.ogg' },
@@ -236,9 +236,11 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
     <div className="flex flex-col items-center select-none group">
      <button 
   onClick={() => onToggle(sound.id)}
-  className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-300 active:scale-90 ${
-    isActive ? 'bg-white border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]' : 'bg-transparent border-white/50 hover:border-white hover:bg-white/10'
-  }`}
+  className={`w-20 h-20 md:w-24 md:h-24 rounded-full border-[1.5px] flex items-center justify-center transition-all duration-500 active:scale-90 ${
+          isActive 
+            ? 'bg-white border-white shadow-[0_0_20px_rgba(255,255,255,0.4)] animate-[pulse_2s_ease-in-out_infinite]' 
+            : 'bg-transparent border-white/50 hover:border-white hover:bg-white/10'
+        }`}
 >
         <Icon 
           size={32} 
@@ -248,17 +250,23 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
         />
       </button>
       
-      <div className="mt-3 text-center h-12 w-full px-2">
-        {isActive ? (
-          <input 
-            type="range" 
-            min="0" max="100" value={volume}
-            onChange={(e) => onVolumeChange(sound.id, e.target.value)}
-            className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white"
-          />
-        ) : (
-          <span className="text-sm font-light tracking-wide text-white/90 line-clamp-2 leading-tight">{sound.name}</span>
-        )}
+      <div className="mt-3 text-center h-4 w-full px-2 relative flex items-center justify-center">
+        {/* The Slider (Fades in when active) */}
+        <input 
+          type="range" 
+          min="0" max="100" value={volume}
+          onChange={(e) => onVolumeChange(sound.id, e.target.value)}
+          className={`absolute w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-white transition-all duration-500 ${
+            isActive ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'
+          }`}
+        />
+        
+        {/* The Text (Fades out when active) */}
+        <span className={`absolute text-sm font-light tracking-wide text-white/90 line-clamp-1 leading-tight transition-all duration-500 ${
+          isActive ? 'opacity-0 -translate-y-2 pointer-events-none' : 'opacity-100 translate-y-0'
+        }`}>
+          {sound.name}
+        </span>
       </div>
     </div>
   );
@@ -290,6 +298,19 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [timeLeft, isGlobalPlay]);
 
+  // Global Spacebar Control
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent scrolling down when hitting spacebar
+      if (e.code === 'Space' && e.target === document.body) {
+        e.preventDefault();
+        setIsGlobalPlay((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const setTimer = (minutes: number) => {
     setTimeLeft(minutes * 60);
     setIsGlobalPlay(true);
@@ -319,10 +340,10 @@ export default function Home() {
   return (
     <main className="relative h-screen w-full overflow-hidden bg-gray-900 text-white font-sans flex flex-col transition-colors duration-500">
       
-      {/* Background Image Layer */}
+      {/* Background Image Layer with Breathing Effect */}
       <div 
         key={activeCategory.id} 
-        className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-700 ease-in-out" 
+        className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-1000 ease-in-out scale-110 animate-[pulse_20s_ease-in-out_infinite]" 
         style={{ backgroundImage: `url("${activeCategory.bgImage}")` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70"></div>
