@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Standard LTS version for Next.js
+          node-version: '22' # Standard LTS version for Next.js
           cache: 'npm'      # Speeds up installation by caching dependencies
 
       # 3. Install project dependencies cleanly

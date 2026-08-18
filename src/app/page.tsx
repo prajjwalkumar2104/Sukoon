@@ -324,7 +324,7 @@ export default function Home() {
     if (!isZenMode) {
       try {
         await document.documentElement.requestFullscreen();
-      } catch (err) {
+      } catch {
         console.log("Fullscreen API not supported");
       }
       setIsZenMode(true);
