@@ -333,7 +333,7 @@ export default function Home() {
         if (document.fullscreenElement) {
           await document.exitFullscreen();
         }
-      } catch (err) {}
+      } catch {}
       setIsZenMode(false);
     }
   };
