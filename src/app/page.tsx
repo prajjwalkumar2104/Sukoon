@@ -9,7 +9,7 @@ import {
   Anchor, Radar, Fan, Tv, Coffee, LucideIcon, 
   X, PawPrint, Bug, Bell, Disc, Activity, Clock, Keyboard, Map, Brain
 } from 'lucide-react';
-import { useSound } from '../hooks/useSound';
+import useSound from '../hooks/useSound';
 
 // --- TypeScript Interfaces ---
 interface SoundState { active: boolean; volume: number; }
@@ -230,7 +230,7 @@ const SoundItem: React.FC<SoundItemProps> = ({ sound, activeState, onToggle, onV
   const isActive = activeState?.active || false;
   const volume = activeState?.volume || 50;
 
-  useSound(sound.file, isActive, volume, isGlobalPlay, globalVolume);
+  useSound(sound.file, volume, isActive && isGlobalPlay, globalVolume);
 
   return (
     <div className="flex flex-col items-center select-none group">
@@ -432,7 +432,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative h-screen w-full overflow-hidden bg-gray-900 text-white font-sans flex flex-col transition-colors duration-500">
+  <main className="relative h-[100dvh] w-full overflow-hidden bg-gray-900 text-white font-sans flex flex-col transition-colors duration-500">
       
       {/* =========================================
           BACKGROUND & DYNAMIC VISUAL LAYERS

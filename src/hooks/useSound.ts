@@ -1,48 +1,52 @@
 import { useEffect, useRef } from 'react';
 import { Howl } from 'howler';
 
-export function useSound(src: string, isActive: boolean, volume: number, isGlobalPlay: boolean, globalVolume: number) {
+export default function useSound(
+  src: string, 
+  volume: number, 
+  isPlaying: boolean, 
+  effectiveVolume: number = 100 // Fallback in case this isn't passed
+) {
   const soundRef = useRef<Howl | null>(null);
 
-  // Math: 80% local volume * 50% global volume = 40% actual volume
-  const effectiveVolume = (volume / 100) * (globalVolume / 100);
-
+  // 1. Initialize the Howler instance
   useEffect(() => {
-    if (!soundRef.current && src) {
-      soundRef.current = new Howl({
-        src: [src],
-        loop: true,
-        volume: effectiveVolume,
-        html5: true, 
-      });
-    }
+    soundRef.current = new Howl({
+      src: [src],
+      loop: true,
+      // Calculate initial volume (Howler uses 0.0 to 1.0)
+      volume: (volume / 100) * (effectiveVolume / 100),
+      // html5: false forces the Web Audio API. 
+      // This is the MAGIC trick that fixes the 200kb bug and the iOS volume lock!
+      html5: false, 
+    });
 
-    const sound = soundRef.current;
-    const shouldPlay = isActive && isGlobalPlay;
-
-    if (shouldPlay && sound && !sound.playing()) {
-      sound.play();
-      sound.fade(0, effectiveVolume, 1000); 
-    } else if (!shouldPlay && sound && sound.playing()) {
-      sound.fade(sound.volume(), 0, 1000);
-      sound.once('fade', () => {
-        sound.pause();
-      });
-    }
-
+    // Cleanup when component unmounts
     return () => {
-      if (sound) {
-        sound.unload();
-      }
+      soundRef.current?.unload();
     };
-  }, [src, isActive, isGlobalPlay, effectiveVolume]); 
+  }, [src]); // Only re-run if the audio file source changes
 
-  // Watch for ANY volume changes and update the audio instance immediately
+  // 2. Handle Play / Pause State
   useEffect(() => {
-    if (soundRef.current) {
-      soundRef.current.volume(effectiveVolume);
-    }
-  }, [effectiveVolume]);
+    if (!soundRef.current) return;
 
-  return soundRef;
+    if (isPlaying) {
+      if (!soundRef.current.playing()) {
+        soundRef.current.play();
+      }
+    } else {
+      soundRef.current.pause();
+    }
+  }, [isPlaying]);
+
+  // 3. Handle Volume Changes (Works on Mobile!)
+  useEffect(() => {
+    if (!soundRef.current) return;
+    
+    // Combine the local slider volume with the master global volume
+    const finalVolume = (volume / 100) * (effectiveVolume / 100);
+    soundRef.current.volume(finalVolume);
+    
+  }, [volume, effectiveVolume]);
 }
