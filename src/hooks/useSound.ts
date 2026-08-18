@@ -35,7 +35,7 @@ export function useSound(src: string, isActive: boolean, volume: number, isGloba
         sound.unload();
       }
     };
-  }, [src, isActive, isGlobalPlay]); 
+  }, [src, isActive, isGlobalPlay, effectiveVolume]); 
 
   // Watch for ANY volume changes and update the audio instance immediately
   useEffect(() => {
