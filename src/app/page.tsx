@@ -348,8 +348,10 @@ export default function Home() {
         setTimeLeft(prev => (prev ? prev - 1 : 0));
       }, 1000);
     } else if (timeLeft === 0) {
-      setIsGlobalPlay(false);
-      setTimeLeft(null);
+      setTimeout(() => {
+        setIsGlobalPlay(false);
+        setTimeLeft(null);
+      }, 0);
     }
     return () => clearInterval(interval);
   }, [timeLeft, isGlobalPlay]);
